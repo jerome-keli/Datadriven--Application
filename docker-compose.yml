@@ -1,0 +1,45 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: pharmastock-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mysql:
+    image: mysql:8
+    container_name: pharmastock-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pharmastock_payments
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: pharmastock-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/pharmastock
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pharmastock_payments?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      APP_SEED_ENABLED: "true"
+
+volumes:
+  mongo_data:
+  mysql_data:
