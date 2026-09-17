@@ -1,8 +1,7 @@
 # Pharmacy Stock Visibility & Reservation Platform (MVP)
 
 > **This folder contains the files for a pharmacy stock visibility application**
-> See `reports/Task1-Report.docx` for the full write-up covering system
-> design, API development, and error-handling mechanisms.
+
 
 A platform where customers can search which nearby pharmacies have a given
 drug in stock, reserve it for pickup, and pay while pharmacists manage
